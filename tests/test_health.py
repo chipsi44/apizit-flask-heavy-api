@@ -27,7 +27,7 @@ def test_ready_loads_both_models(client):
 
 
 def test_info_exposes_only_allowlisted_runtime_data(client, monkeypatch):
-    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "must-not-leak")
+    monkeypatch.setenv("PRIVATE_TEST_VALUE", "must-not-leak")
     response = client.get("/info")
 
     assert response.status_code == 200

@@ -4,7 +4,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
 
-from src.services.model_registry import ModelRegistry
+from app.ml import ModelRegistry
 
 
 def test_registry_reuses_one_instance_across_threads():

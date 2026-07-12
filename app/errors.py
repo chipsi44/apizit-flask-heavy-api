@@ -1,4 +1,4 @@
-"""JSON API errors and Flask error-handler registration."""
+"""Homogeneous JSON errors without exposed stack traces."""
 
 from __future__ import annotations
 
@@ -13,16 +13,12 @@ logger = logging.getLogger(__name__)
 
 @dataclass(slots=True)
 class APIError(Exception):
-    """An expected client-facing error with a stable machine-readable code."""
-
     code: str
     message: str
     status_code: int
 
 
 class ModelUnavailableError(APIError):
-    """Raised when a configured ML model cannot be loaded."""
-
     def __init__(self, message: str) -> None:
         super().__init__("MODEL_UNAVAILABLE", message, 503)
 
@@ -32,8 +28,6 @@ def error_payload(code: str, message: str) -> dict[str, dict[str, str]]:
 
 
 def register_error_handlers(app: Flask) -> None:
-    """Register homogeneous JSON responses without leaking stack traces."""
-
     @app.errorhandler(APIError)
     def handle_api_error(error: APIError):
         return jsonify(error_payload(error.code, error.message)), error.status_code
@@ -60,7 +54,4 @@ def register_error_handlers(app: Flask) -> None:
     @app.errorhandler(Exception)
     def handle_unexpected_error(error: Exception):
         logger.exception("Unhandled request error", exc_info=error)
-        return (
-            jsonify(error_payload("INTERNAL_ERROR", "An unexpected error occurred.")),
-            500,
-        )
+        return jsonify(error_payload("INTERNAL_ERROR", "An unexpected error occurred.")), 500

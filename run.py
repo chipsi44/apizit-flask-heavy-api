@@ -1,6 +1,6 @@
-"""Local development entry point."""
+"""Start the standalone Flask development server."""
 
-from src.app import app
+from app import app
 
 if __name__ == "__main__":
     settings = app.config["SETTINGS"]

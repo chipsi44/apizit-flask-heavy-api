@@ -1,22 +1,17 @@
 from __future__ import annotations
 
 from io import BytesIO
-from pathlib import Path
 
 import pytest
 from PIL import Image
 
-from src.config import Settings
-from src.services.image_service import ImageService, decode_image
-from src.services.text_service import TextService
+from app.config import Settings
+from app.ml import ImageService, TextService, decode_image
 
 
 @pytest.mark.model
 def test_real_models_load_and_execute():
     settings = Settings()
-    if not Path(settings.text_model_path).is_dir() or not Path(settings.image_model_path).is_file():
-        pytest.skip("Run scripts/download_models.py before the real model integration test.")
-
     text_vector = TextService(settings).embed(["APIZIT deploys a Flask API."])[0]
 
     buffer = BytesIO()

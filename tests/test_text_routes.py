@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from src.services.text_service import TextService
+from app.ml import TextService
 
 
 def test_text_embedding_contract(client):

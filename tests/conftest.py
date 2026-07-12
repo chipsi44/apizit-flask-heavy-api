@@ -6,8 +6,8 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from src.app import create_app
-from src.config import Settings
+from app import create_app
+from app.config import Settings
 
 
 class StubTextService:
@@ -46,8 +46,7 @@ def settings(tmp_path):
     return Settings(
         max_upload_bytes=1024 * 1024,
         max_text_length=32,
-        text_model_path=str(tmp_path / "text"),
-        image_model_path=str(tmp_path / "resnet.pth"),
+        model_cache_dir=str(tmp_path / "models"),
     )
 
 

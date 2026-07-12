@@ -1,4 +1,4 @@
-"""Flask application factory."""
+"""Flask application factory for the heavy multimodal API."""
 
 from __future__ import annotations
 
@@ -6,18 +6,16 @@ import logging
 
 from flask import Flask
 
-from src.config import Settings
-from src.errors import register_error_handlers
-from src.routes.health import health_blueprint
-from src.routes.image import image_blueprint
-from src.routes.text import text_blueprint
-from src.services.image_service import ImageService
-from src.services.model_registry import ModelRegistry
-from src.services.text_service import TextService
+from app.config import Settings
+from app.errors import register_error_handlers
+from app.ml import ImageService, ModelRegistry, TextService
+from app.routes import api
+
+__version__ = "1.0.0"
 
 
 def create_app(settings: Settings | None = None) -> Flask:
-    """Build the Flask application without eagerly loading ML models."""
+    """Create the Flask app without loading either model eagerly."""
 
     active_settings = settings or Settings()
     logging.basicConfig(
@@ -36,9 +34,7 @@ def create_app(settings: Settings | None = None) -> Flask:
     registry.register("image", lambda: ImageService(active_settings))
     app.extensions["model_registry"] = registry
 
-    app.register_blueprint(health_blueprint)
-    app.register_blueprint(image_blueprint)
-    app.register_blueprint(text_blueprint)
+    app.register_blueprint(api)
     register_error_handlers(app)
     return app
 
