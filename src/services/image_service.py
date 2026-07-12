@@ -87,7 +87,7 @@ def decode_image(data: bytes, mime_type: str, settings: Settings) -> DecodedImag
     enhanced_lightness = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8)).apply(lightness)
     enhanced_lab = cv2.merge((enhanced_lightness, green_red, blue_yellow))
     enhanced_rgb = cv2.cvtColor(enhanced_lab, cv2.COLOR_LAB2RGB)
-    enhanced_image = Image.fromarray(enhanced_rgb, mode="RGB")
+    enhanced_image = Image.fromarray(enhanced_rgb)
 
     return DecodedImage(
         image=enhanced_image,
