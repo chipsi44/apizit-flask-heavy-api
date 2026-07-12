@@ -8,7 +8,6 @@ ENV PYTHONUNBUFFERED=1 \
     TEXT_MODEL_PATH=/opt/models/text/all-MiniLM-L6-v2 \
     IMAGE_MODEL_PATH=/opt/models/torchvision/resnet50-imagenet1k-v2.pth \
     HF_HOME=/tmp/huggingface \
-    TRANSFORMERS_CACHE=/tmp/huggingface/transformers \
     TORCH_HOME=/tmp/torch \
     TOKENIZERS_PARALLELISM=false \
     HOME=/tmp
@@ -27,8 +26,9 @@ COPY src ${LAMBDA_TASK_ROOT}/src
 COPY scripts ${LAMBDA_TASK_ROOT}/scripts
 COPY lambda_handler.py ${LAMBDA_TASK_ROOT}/lambda_handler.py
 
-RUN python ${LAMBDA_TASK_ROOT}/scripts/download_models.py \
-    && python ${LAMBDA_TASK_ROOT}/scripts/smoke_models.py \
+RUN cd ${LAMBDA_TASK_ROOT} \
+    && python -m scripts.download_models \
+    && python -m scripts.smoke_models \
     && rm -rf /root/.cache /tmp/huggingface /tmp/torch
 
 ENV HF_HUB_OFFLINE=1 \
