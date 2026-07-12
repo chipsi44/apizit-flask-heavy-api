@@ -9,7 +9,9 @@ from flask import Flask
 from src.config import Settings
 from src.errors import register_error_handlers
 from src.routes.health import health_blueprint
+from src.routes.image import image_blueprint
 from src.routes.text import text_blueprint
+from src.services.image_service import ImageService
 from src.services.model_registry import ModelRegistry
 from src.services.text_service import TextService
 
@@ -31,9 +33,11 @@ def create_app(settings: Settings | None = None) -> Flask:
 
     registry = ModelRegistry()
     registry.register("text", lambda: TextService(active_settings))
+    registry.register("image", lambda: ImageService(active_settings))
     app.extensions["model_registry"] = registry
 
     app.register_blueprint(health_blueprint)
+    app.register_blueprint(image_blueprint)
     app.register_blueprint(text_blueprint)
     register_error_handlers(app)
     return app
