@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.12
+FROM public.ecr.aws/lambda/python:3.12@sha256:8420879f7ec986cdf09a05e4b92cd3626cd66c67ccd4d68eea6682619e20dd68
 
 ARG TEXT_MODEL_ID=sentence-transformers/all-MiniLM-L6-v2
 
