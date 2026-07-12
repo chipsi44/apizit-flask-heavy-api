@@ -1,0 +1,27 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /text/embedding",
+  "rawPath": "/text/embedding",
+  "rawQueryString": "",
+  "headers": {
+    "accept": "application/json",
+    "content-type": "application/json",
+    "host": "localhost"
+  },
+  "requestContext": {
+    "http": {
+      "method": "POST",
+      "path": "/text/embedding",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "127.0.0.1",
+      "userAgent": "curl"
+    },
+    "requestId": "local-text",
+    "routeKey": "POST /text/embedding",
+    "stage": "$default",
+    "time": "01/Jan/2026:00:00:00 +0000",
+    "timeEpoch": 1767225600000
+  },
+  "body": "{\"text\":\"APIZIT deploys Python APIs without exposing AWS infrastructure.\"}",
+  "isBase64Encoded": false
+}
