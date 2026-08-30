@@ -10,11 +10,15 @@ def test_http_errors_use_homogeneous_json(client):
 
 
 def test_unexpected_errors_do_not_expose_stack_traces(app):
-    @app.get("/test-error")
-    def test_error():
+    def raise_unexpected_error():
         raise RuntimeError("sensitive-internal-detail")
 
-    response = app.test_client().get("/test-error")
+    original_health = app.view_functions["api.health"]
+    app.view_functions["api.health"] = raise_unexpected_error
+    try:
+        response = app.test_client().get("/health")
+    finally:
+        app.view_functions["api.health"] = original_health
 
     assert response.status_code == 500
     assert response.get_json()["error"]["code"] == "INTERNAL_ERROR"
