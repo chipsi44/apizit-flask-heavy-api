@@ -1,7 +1,7 @@
 [project]
-name = "apizit-heavy-ml-api"
+name = "apizit-flask-heavy-api"
 version = "1.0.0"
-description = "Standalone heavy multimodal Flask API for APIZIT tests."
+description = "Standalone heavy multimodal Flask reference API for APIZIT."
 requires-python = ">=3.12,<3.13"
 license = "MIT"
 

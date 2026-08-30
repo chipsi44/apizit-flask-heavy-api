@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import platform
 from importlib.metadata import version
+from time import sleep
 from typing import Any
 
 import cv2
@@ -20,6 +21,7 @@ from app.errors import APIError, ModelUnavailableError
 from app.ml import DecodedImage, ImageService, ModelRegistry, TextService, decode_image
 
 api = Blueprint("api", __name__)
+SLOW_RESPONSE_SECONDS = 80
 
 
 def _registry() -> ModelRegistry:
@@ -63,25 +65,9 @@ def _uploaded_image() -> DecodedImage:
     return decode_image(data, upload.mimetype, settings)
 
 
-@api.get("/")
-def index():
-    return jsonify(
-        name="APIZIT Heavy ML API",
-        endpoints=[
-            "GET /health",
-            "GET /ready",
-            "GET /info",
-            "POST /text/embedding",
-            "POST /text/similarity",
-            "POST /image/analyze",
-            "POST /image/embedding",
-        ],
-    )
-
-
 @api.get("/health")
 def health():
-    return jsonify(status="ok", service=current_app.config["SETTINGS"].service_name)
+    return jsonify(status="ok")
 
 
 @api.get("/ready")
@@ -112,7 +98,8 @@ def info():
     settings = current_app.config["SETTINGS"]
     return jsonify(
         version=settings.version,
-        runtime="flask",
+        framework="flask",
+        profile="heavy",
         python=platform.python_version(),
         libraries={
             "flask": version("flask"),
@@ -129,6 +116,36 @@ def info():
         models={"text": settings.text_model_id, "image": settings.image_model_id},
         device="cpu",
     )
+
+
+@api.post("/echo")
+def echo():
+    payload = _json_object()
+    message = _text_field(payload, "message")
+    count = payload.get("count")
+    if not isinstance(count, int) or isinstance(count, bool):
+        raise APIError("INVALID_REQUEST", "The field 'count' must be an integer.", 400)
+    return jsonify(received={"message": message, "count": count})
+
+
+@api.get("/items/<int:item_id>")
+def item(item_id: int):
+    if item_id < 1:
+        raise APIError("INVALID_REQUEST", "The item ID must be a positive integer.", 400)
+    raw_include_details = request.args.get("include_details", "false").lower()
+    if raw_include_details not in {"true", "false"}:
+        raise APIError("INVALID_REQUEST", "'include_details' must be true or false.", 400)
+    include_details = raw_include_details == "true"
+    response = {"item_id": item_id, "include_details": include_details}
+    if include_details:
+        response["details"] = f"Reference item {item_id}"
+    return jsonify(response)
+
+
+@api.get("/slow")
+def slow():
+    sleep(SLOW_RESPONSE_SECONDS)
+    return jsonify(delay_seconds=SLOW_RESPONSE_SECONDS, status="completed")
 
 
 @api.post("/text/embedding")

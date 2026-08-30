@@ -12,7 +12,7 @@ def _as_bool(value: str) -> bool:
 
 @dataclass(frozen=True, slots=True)
 class Settings:
-    service_name: str = "apizit-heavy-ml-api"
+    service_name: str = "apizit-flask-heavy-api"
     version: str = "1.0.0"
     host: str = os.getenv("APP_HOST", "0.0.0.0")
     port: int = int(os.getenv("APP_PORT", "5000"))
